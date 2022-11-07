@@ -33,6 +33,7 @@ public class User{
 	private String createdDate = LocalDate.now().toString();
 
 	private String dob;
+
 	private String mobile;
 
 	@NotBlank(message = "Password is mandatory")

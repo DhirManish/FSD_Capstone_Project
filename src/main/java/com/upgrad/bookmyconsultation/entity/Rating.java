@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.UUID;
@@ -14,10 +15,19 @@ import java.util.UUID;
 public class Rating{
 	
 	@Id
-	private String id = UUID.randomUUID().toString();;
+	@Column(name="id")
+	private String id = UUID.randomUUID().toString();
+
+	@Column(name="appointment_id")
 	private String appointmentId;
+
+	@Column(name="doctor_id")
 	private String doctorId;
+
+	@Column(name="rating")
 	private Integer rating;
+
+	@Column(name="comments")
 	private String comments;
 	
 	public String getId() {
