@@ -21,7 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Appointment {
 
-	@Id
+	/*@Id
 	@Column(name="appointment_id")
 	private String appointmentId = UUID.randomUUID().toString();
 
@@ -128,6 +128,21 @@ public class Appointment {
 		this.priorMedicalHistory = priorMedicalHistory;
 	}
 	
-	
+	*/
+
+	@Id
+	private String appointmentId = UUID.randomUUID().toString();
+	private String doctorId;
+	private String doctorName;
+	private String userId;
+	private String userName;
+	private String userEmailId;
+	private String timeSlot;
+	private String status;
+	private String appointmentDate;
+	@JsonIgnore
+	private String createdDate;
+	private String symptoms;
+	private String priorMedicalHistory;
 
 }

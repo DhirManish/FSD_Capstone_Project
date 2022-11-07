@@ -1,6 +1,7 @@
 package com.upgrad.bookmyconsultation.controller;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.upgrad.bookmyconsultation.controller.ext.ResponseBuilder;
 import com.upgrad.bookmyconsultation.entity.Appointment;
 import com.upgrad.bookmyconsultation.exception.InvalidInputException;
 import com.upgrad.bookmyconsultation.exception.SlotUnavailableException;
@@ -13,14 +14,9 @@ import java.util.Map;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/appointments")
@@ -35,25 +31,16 @@ public class AppointmentController {
 	
 		//save the appointment details to the database and save the response from the method used
 		//return http response using ResponseEntity
-	
-	@PostMapping
-	public ResponseEntity<Appointment> bookAppointment(@RequestBody Appointment appointment) throws InvalidInputException{
-		
-		final Map<String, Appointment> DOCMAP = new HashMap<>();
-		
-		DOCMAP.put(appointment.getAppointmentId(), appointment);
-		DOCMAP.put(appointment.getDoctorId(), appointment);
-		DOCMAP.put(appointment.getDoctorName(), appointment);
-		DOCMAP.put(appointment.getUserId(), appointment);
-		DOCMAP.put(appointment.getUserName(), appointment);
-		DOCMAP.put(appointment.getUserEmailId(), appointment);
-		DOCMAP.put(appointment.getTimeSlot(), appointment);
-		DOCMAP.put(appointment.getStatus(), appointment);
-		DOCMAP.put(appointment.getAppointmentDate(), appointment);
-		DOCMAP.put(appointment.getSymptoms(), appointment);
-		DOCMAP.put(appointment.getPriorMedicalHistory(), appointment);
-		
-		return new ResponseEntity(appointment, HttpStatus.CREATED);
+
+	@PostMapping(path = {},
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity bookAppointment(@RequestHeader("authorization") String accessToken,
+										  @RequestBody Appointment appointment) throws InvalidInputException {
+		String appointmentResponse = appointmentService.appointment(appointment);
+		return ResponseBuilder.ok()
+				.payload(appointmentResponse)
+				.build();
 	}
 	
 	//create a get method named getAppointment with return type as ResponseEntity
@@ -63,13 +50,14 @@ public class AppointmentController {
 		//save the response
 		//return the response as an http response
 	
-	@GetMapping(value="{appointmentsId}")
-	public ResponseEntity<Appointment> getAppointment(@PathVariable String appointmentId){
-		
-		List<Appointment> appointment = appointmentService.getAppointmentsForUser(appointmentId);
-		
-		return new ResponseEntity(appointment, HttpStatus.OK);
-		
+	@GetMapping(path="/{appointmentId}",
+				produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity getAppointment(@RequestHeader("authorization") String accessToken,
+													  @PathVariable String appointmentId){
+		Appointment appointmentResponse = appointmentService.getAppointment(appointmentId);
+		return ResponseBuilder.ok()
+				.payload(appointmentResponse)
+				.build();
 	}
 	
 
