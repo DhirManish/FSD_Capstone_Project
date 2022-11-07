@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -14,14 +17,27 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User{
-	
+
+	@Id
+	@Column(name="email_id", nullable=false)
+	@NotBlank(message="Email is neccessary")
+	private String emailId;
+
+	@Column(name="first_name")
 	private String firstName;
+
+	@Column(name="last_name")
 	private String lastName;
+
+	@Column(name="created_date")
+	private String createdDate = LocalDate.now().toString();
+
 	private String dob;
 	private String mobile;
-	private String emailId;
+
+	@NotBlank(message = "Password is mandatory")
 	private String password;
-	private String createdDate;
+
 	private String salt;
 	
 	public String getFirstName() {
