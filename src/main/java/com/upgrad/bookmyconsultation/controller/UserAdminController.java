@@ -1,5 +1,6 @@
 package com.upgrad.bookmyconsultation.controller;
 
+import com.upgrad.bookmyconsultation.controller.ext.ResponseBuilder;
 import com.upgrad.bookmyconsultation.entity.User;
 import com.upgrad.bookmyconsultation.exception.InvalidInputException;
 import com.upgrad.bookmyconsultation.service.AppointmentService;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -43,14 +47,20 @@ public class UserAdminController {
 		//return http response with status set to OK
 	
 	@PostMapping(path="/register")
-	public ResponseEntity<User> createUser(@RequestBody User user) throws InvalidInputException{
+	public ResponseEntity<User> createUser(@RequestBody final User user) throws InvalidInputException{
 		
-		userService.register(user);
-		
-		return ResponseEntity.ok(user);
-	}
-	
+		final User userResponse = userService.register(user);
 
+		if(userResponse == null) {
+			List<String> attributesNames = new ArrayList<>();
+			attributesNames.add("Error while registering user");
+			throw new InvalidInputException(attributesNames);
+		}
+
+		return ResponseBuilder.ok()
+				.payload(userResponse)
+				.build();
+	}
 
 	@GetMapping("/{userId}/appointments")
 	public ResponseEntity getAppointmentForUser(@PathVariable("userId") String userId) {
