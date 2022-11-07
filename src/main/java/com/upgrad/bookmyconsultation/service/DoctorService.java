@@ -55,18 +55,16 @@ public class DoctorService {
 		
 		doctor.SetId(UUID.randomUUID().toString());
 		
-		if(doctorRepository.findBySpecialityOrderByRatingDesc(doctor.getSpeciality()) == null) {
+		if(doctor.getSpeciality() == null) {
 			doctor.setSpeciality(Speciality.GENERAL_PHYSICIAN);
 		}
 		
 		Address address = doctor.getAddress();
-		
-		addressRepository.save(address);
-		
-		doctor.setAddress(address);
-		
+		address.setId(doctor.getId());
+
+		doctor.setAddress(addressRepository.save(address));
+
 		doctorRepository.save(doctor);
-		
 		return doctor;
 		
 	}
