@@ -50,7 +50,7 @@ public class DoctorService {
 		ValidationUtils.validate(doctor);
 		
 		if(doctor.getAddress() == null) {
-			throw new InvalidInputException();
+			throw new InvalidInputException(Arrays.asList("Address"));
 		}
 		
 		doctor.SetId(UUID.randomUUID().toString());
@@ -78,10 +78,10 @@ public class DoctorService {
 		//if doctor is found return the doctor
 		//else throw ResourceUnAvailableException
 	
-	public Optional<Doctor> getDoctor(String id) {
-		
-		return Optional.ofNullable(doctorRepository.findById(id))
-				.orElseThrow(ResourceUnAvailableException::new);
+	public Doctor getDoctor(String id) {
+
+		Optional<Doctor> doctor = doctorRepository.findById(id);
+		return Optional.ofNullable(doctor).orElseThrow(ResourceUnAvailableException::new).get();
 		
 		
 	}

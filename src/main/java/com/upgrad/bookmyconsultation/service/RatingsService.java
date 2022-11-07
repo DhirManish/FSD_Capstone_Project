@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 
 @Service
 public class RatingsService {
@@ -37,17 +39,19 @@ public class RatingsService {
 		
 		rating.setId(UUID.randomUUID().toString());
 		
-		ratingsRepository.save(rating);
-		
-		String ratedDoctorId = rating.getDoctorId();
-		
-		String resultDoctorId = ratingsRepository.findById(ratedDoctorId);
-		
-		rating.setDoctorId(resultDoctorId);
-		
-		rating.setRating(4);
-		
-		ratingsRepository.save(rating);
-		
+		Rating savedRating = ratingsRepository.save(rating);
+
+		Doctor ratingForDoctor = doctorRepository.findById(savedRating.getDoctorId())
+				.orElse(null);
+
+		if(!isNull(ratingForDoctor)) {
+			Double averageRating = ratingsRepository
+					.findByDoctorId(ratingForDoctor.getId())
+					.stream()
+					.collect(Collectors.averagingDouble(numRating -> numRating.getRating()));
+			ratingForDoctor.setRating(averageRating);
+			doctorRepository.save(ratingForDoctor);
+		}
+
 	}
 }
