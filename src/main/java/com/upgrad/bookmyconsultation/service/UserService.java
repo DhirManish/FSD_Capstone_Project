@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Autowired
 	private PasswordCryptographyProvider passwordCryptographyProvider;
