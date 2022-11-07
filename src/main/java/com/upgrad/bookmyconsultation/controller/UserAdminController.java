@@ -7,6 +7,7 @@ import com.upgrad.bookmyconsultation.service.AppointmentService;
 import com.upgrad.bookmyconsultation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,9 +46,12 @@ public class UserAdminController {
 		//register the user
 	
 		//return http response with status set to OK
-	
-	@PostMapping(path="/register")
-	public ResponseEntity<User> createUser(@RequestBody final User user) throws InvalidInputException{
+/*
+	@PostMapping(path="/register",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity createUser(@RequestBody final User user) throws InvalidInputException{
 		
 		final User userResponse = userService.register(user);
 
@@ -61,6 +65,22 @@ public class UserAdminController {
 				.payload(userResponse)
 				.build();
 	}
+*/
+	@PostMapping(path = "/register",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity createUser(@RequestBody final User user) throws InvalidInputException{
+		final User userResponse = userService.register(user);
+		if (userResponse == null) {
+			List<String> attributeNames = new ArrayList<>();
+			attributeNames.add("Error while processing user");
+			throw new InvalidInputException(attributeNames);
+		}
+		return ResponseBuilder.ok()
+				.payload(userResponse)
+				.build();
+	}
+
 
 	@GetMapping("/{userId}/appointments")
 	public ResponseEntity getAppointmentForUser(@PathVariable("userId") String userId) {
