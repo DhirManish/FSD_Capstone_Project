@@ -46,26 +46,6 @@ public class UserAdminController {
 		//register the user
 	
 		//return http response with status set to OK
-/*
-	@PostMapping(path="/register",
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE
-	)
-	public ResponseEntity createUser(@RequestBody final User user) throws InvalidInputException{
-		
-		final User userResponse = userService.register(user);
-
-		if(userResponse == null) {
-			List<String> attributesNames = new ArrayList<>();
-			attributesNames.add("Error while registering user");
-			throw new InvalidInputException(attributesNames);
-		}
-
-		return ResponseBuilder.ok()
-				.payload(userResponse)
-				.build();
-	}
-*/
 	@PostMapping(path = "/register",
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
